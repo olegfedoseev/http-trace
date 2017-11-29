@@ -28,9 +28,11 @@ func DoRequestWithTrace(client *http.Client, req *http.Request) (*Trace, *http.R
 	req = req.WithContext(ctx)
 
 	resp, err := client.Do(req)
-	resp.Body = spyBodyReader{
-		ReadCloser:   resp.Body,
-		bodyReadTime: &clientTrace.BodyReadTime,
+	if resp != nil {
+		resp.Body = spyBodyReader{
+			ReadCloser:   resp.Body,
+			bodyReadTime: &clientTrace.BodyReadTime,
+		}
 	}
 
 	return clientTrace, resp, err
